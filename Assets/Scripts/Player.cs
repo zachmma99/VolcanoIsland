@@ -41,8 +41,8 @@ public class Player : MonoBehaviour
 
     void FixedUpdate() {
         //geting player input
-        input = Input.GetAxis("Horizontal"); //Has smoothing
-        //float input = Input.GetAxisRaw("Horizontal"); //Has no smoothing
+        //input = Input.GetAxis("Horizontal"); //Has smoothing
+        input = Input.GetAxisRaw("Horizontal"); //Has no smoothing
 
         //move player
         rb.velocity = new Vector2(input*speed,rb.velocity.y);
