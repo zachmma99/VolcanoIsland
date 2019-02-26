@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     private float input;
     public int health;
 
+    private float eps = 0.0001f;
+
     Rigidbody2D rb; //needs a rigidbody
     Animator anim;
 
@@ -21,7 +23,7 @@ public class Player : MonoBehaviour
     }
 
     private void Update() {
-        if (input != 0) {
+        if (input > 0+eps || input<0-eps) {
             anim.SetBool("isRunning", true);
         } else {
             anim.SetBool("isRunning", false);
