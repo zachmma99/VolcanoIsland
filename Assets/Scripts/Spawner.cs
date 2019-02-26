@@ -11,6 +11,9 @@ public class Spawner : MonoBehaviour
     //public variables to control spawn behavior
     public float timeBetweenSpawns;
 
+    public float minSpawnTime;
+    public float decreaseAmt;
+
     private float spawnTimer;
 
     // Start is called before the first frame update
@@ -31,6 +34,13 @@ public class Spawner : MonoBehaviour
             GameObject enemy = enemies[Random.Range(0, enemies.Length)];
             Transform location = spawnLocations[Random.Range(0, spawnLocations.Length)].transform;
             Instantiate(enemy,new Vector3(location.position.x,location.position.y,0f),Quaternion.identity);
+
+            //increasing difficulty after every spawn
+            timeBetweenSpawns -=decreaseAmt;
+            if (timeBetweenSpawns < minSpawnTime) {
+                timeBetweenSpawns = minSpawnTime;
+            }
+
             spawnTimer = timeBetweenSpawns;
         } else {
             spawnTimer -= Time.deltaTime;

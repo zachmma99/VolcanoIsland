@@ -827,6 +827,8 @@ MonoBehaviour:
   - {fileID: 4753410228690828475, guid: 3d04eab76bfcf4ad4b9be7fb8474c867, type: 3}
   - {fileID: 6701681661199501189, guid: 5181f37fc38a54dc3b135f63f6bb744c, type: 3}
   timeBetweenSpawns: 1.25
+  minSpawnTime: 0.7
+  decreaseAmt: 0.1
 --- !u!1 &1661764992
 GameObject:
   m_ObjectHideFlags: 0
