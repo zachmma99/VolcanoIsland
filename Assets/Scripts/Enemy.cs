@@ -37,6 +37,7 @@ public class Enemy : MonoBehaviour
         if (collision.tag == "Player") {
             //reduce player health
             p.takeDamage(damage);
+            GameObject.Destroy(gameObject);
         }
     }
 }
