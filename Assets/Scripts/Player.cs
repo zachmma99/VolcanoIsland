@@ -8,6 +8,7 @@ public class Player : MonoBehaviour
 {
     public float speed;   //available in the inspector
     private float input;
+    public int health;
 
     Rigidbody2D rb; //needs a rigidbody
     Animator anim;
@@ -43,5 +44,13 @@ public class Player : MonoBehaviour
 
         //move player
         rb.velocity = new Vector2(input*speed,rb.velocity.y);
+    }
+
+    public void takeDamage(int value) {
+        health -= value;
+        if (health <= 0) {
+            //player dies
+            GameObject.Destroy(gameObject);
+        }
     }
 }
