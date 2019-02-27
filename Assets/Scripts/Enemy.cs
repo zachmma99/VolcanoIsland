@@ -19,6 +19,8 @@ public class Enemy : MonoBehaviour
 
     //death particle effects
     public GameObject deathEffect;
+    //hit particle effects
+    public GameObject hitEffect;
 
     // Start is called before the first frame update
     void Start()
@@ -40,12 +42,13 @@ public class Enemy : MonoBehaviour
         if (collision.tag == "Player") {
             //reduce player health
             p.takeDamage(damage);
+            Instantiate(hitEffect, new Vector3(transform.position.x, transform.position.y, -0.3f), Quaternion.identity);
             GameObject.Destroy(gameObject);
         }
 
         //destroy enemy if hits the ground
         if (collision.tag == "Ground") {
-            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
+            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y, -0.3f), Quaternion.identity);
             GameObject.Destroy(gameObject);
 
         }
