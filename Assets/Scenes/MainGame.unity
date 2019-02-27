@@ -5986,6 +5986,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 10
   health: 3
+  deathFX: {fileID: 1022081403356353717, guid: 7fb71251b4c62d24196d8c14af728473, type: 3}
 --- !u!61 &1013810065
 BoxCollider2D:
   m_ObjectHideFlags: 0

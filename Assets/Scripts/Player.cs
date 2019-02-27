@@ -12,6 +12,9 @@ public class Player : MonoBehaviour
 
     private float eps = 0.0001f;
 
+    //death fx
+    public GameObject deathFX;
+
     Rigidbody2D rb; //needs a rigidbody
     Animator anim;
 
@@ -52,6 +55,7 @@ public class Player : MonoBehaviour
         health -= value;
         if (health <= 0) {
             //player dies
+            Instantiate(deathFX, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
             GameObject.Destroy(gameObject);
         }
     }
