@@ -69,6 +69,8 @@ MonoBehaviour:
   damage: 2
   minSpeed: 3
   maxSpeed: 7
+  deathEffect: {fileID: 1359528260042121863, guid: c2b6ad87e20d14339ab3ce573173d34a,
+    type: 3}
 --- !u!58 &4753410228690828479
 CircleCollider2D:
   m_ObjectHideFlags: 0

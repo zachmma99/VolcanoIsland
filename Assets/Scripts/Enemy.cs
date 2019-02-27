@@ -17,6 +17,9 @@ public class Enemy : MonoBehaviour
 
     private float speed;
 
+    //death particle effects
+    public GameObject deathEffect;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,6 +45,7 @@ public class Enemy : MonoBehaviour
 
         //destroy enemy if hits the ground
         if (collision.tag == "Ground") {
+            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
             GameObject.Destroy(gameObject);
 
         }
