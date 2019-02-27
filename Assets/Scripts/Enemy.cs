@@ -39,5 +39,11 @@ public class Enemy : MonoBehaviour
             p.takeDamage(damage);
             GameObject.Destroy(gameObject);
         }
+
+        //destroy enemy if hits the ground
+        if (collision.tag == "Ground") {
+            GameObject.Destroy(gameObject);
+
+        }
     }
 }
