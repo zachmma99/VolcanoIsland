@@ -13,7 +13,8 @@ public class Player : MonoBehaviour
 
     private float eps = 0.0001f;
 
-    public Text lifeText;
+    //FIXME: I would much rather this be in a gamemanager class, not in the player class
+    public GameObject deathPanel;
 
     //death fx
     public GameObject deathFX;
@@ -26,7 +27,9 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        lifeText.text="x"+health;
+        GameManager.instance().updateHealthText(health);
+        GameManager.instance().deathPanelSwich(false);
+
     }
 
     private void Update() {
@@ -57,11 +60,14 @@ public class Player : MonoBehaviour
 
     public void takeDamage(int value) {
         health -= value;
-        lifeText.text="x"+health;
+        GameManager.instance().updateHealthText(health);
+
         if (health <= 0) {
             //player dies
             Instantiate(deathFX, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
             GameObject.Destroy(gameObject);
+            GameManager.instance().deathPanelSwich(true);
+            
         }
     }
 }
