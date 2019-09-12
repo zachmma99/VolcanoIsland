@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
@@ -11,6 +12,8 @@ public class Player : MonoBehaviour
     public int health;
 
     private float eps = 0.0001f;
+
+    public Text lifeText;
 
     //death fx
     public GameObject deathFX;
@@ -23,6 +26,7 @@ public class Player : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        lifeText.text="x"+health;
     }
 
     private void Update() {
@@ -53,6 +57,7 @@ public class Player : MonoBehaviour
 
     public void takeDamage(int value) {
         health -= value;
+        lifeText.text="x"+health;
         if (health <= 0) {
             //player dies
             Instantiate(deathFX, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);

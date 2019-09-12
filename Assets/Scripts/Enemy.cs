@@ -42,13 +42,13 @@ public class Enemy : MonoBehaviour
         if (collision.tag == "Player") {
             //reduce player health
             p.takeDamage(damage);
-            Instantiate(hitEffect, new Vector3(transform.position.x, transform.position.y, -0.3f), Quaternion.identity);
+            Instantiate(hitEffect, new Vector3(transform.position.x, transform.position.y-0.3f, -0.3f), Quaternion.identity);
             GameObject.Destroy(gameObject);
         }
 
         //destroy enemy if hits the ground
         if (collision.tag == "Ground") {
-            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y, -0.3f), Quaternion.identity);
+            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y-0.5f, -0.3f), Quaternion.identity);
             GameObject.Destroy(gameObject);
 
         }
