@@ -26,7 +26,7 @@ public class Spawner : MonoBehaviour
     void Update()
     {
         //stop spawning if there is no character
-        if (GameObject.FindGameObjectWithTag("Player") == null) {
+        if (GameObject.FindGameObjectWithTag("Player") == null || GameObject.FindGameObjectWithTag("Player").activeSelf==false) {
             return;
         }
         if (spawnTimer <= 0) {
@@ -46,5 +46,9 @@ public class Spawner : MonoBehaviour
             spawnTimer -= Time.deltaTime;
         }
 
+    }
+
+    public void reset(){
+        timeBetweenSpawns=1.25f;
     }
 }

@@ -65,9 +65,18 @@ public class Player : MonoBehaviour
         if (health <= 0) {
             //player dies
             Instantiate(deathFX, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
-            GameObject.Destroy(gameObject);
+            this.gameObject.SetActive(false);
+            //GameObject.Destroy(gameObject); //can't have this for an easy reset
             GameManager.instance().deathPanelSwich(true);
             
         }
+    }
+
+    public void reset(){
+        health=3;
+        Vector3 pos =new Vector3(0.14f,-1.41f,0.0781f);
+        this.transform.position=pos;
+        GameManager.instance().updateHealthText(health);
+        this.gameObject.SetActive(true);
     }
 }

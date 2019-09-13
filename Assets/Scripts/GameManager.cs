@@ -8,14 +8,16 @@ public class GameManager : MonoBehaviour
 {
     static GameManager _instance=null;
 
-    public Text healthText;
-    public GameObject deathPanel;
-
     void Awake(){
         if(_instance==null){
             _instance=this;
         }
     }
+
+    public Text healthText;
+    public GameObject deathPanel;
+    Player player;
+    Spawner spawner;
 
     public static GameManager instance(){
         return _instance;
@@ -32,12 +34,21 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        player=GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        //the game is currently over
+        if(deathPanel.activeSelf){
+            if(Input.GetKeyDown(KeyCode.Space)){
+                //reset game
+                deathPanelSwich(false);
+                player.reset();
+                spawner.reset();
+            }
+        }
     }
 }
