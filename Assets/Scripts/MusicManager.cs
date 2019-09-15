@@ -7,10 +7,20 @@ public class MusicManager : MonoBehaviour
 {
 
     AudioClip backgroundClip;
+    static MusicManager _instance=null;
 
     void Awake(){
         //keeps this gameobject between scene transitions
         //so that the background music will keep playing
+        
+        //ensures that there is only ever one of these
+        //objects in the scene.
+        if(_instance==null){
+            _instance=this;
+        } else {
+            Destroy(this.gameObject);
+        }
+
         DontDestroyOnLoad(this.gameObject);
     }
 
@@ -21,7 +31,9 @@ public class MusicManager : MonoBehaviour
         backgroundClip=source.clip;
 
         //play background music here
-        source.Play();
+        if(!source.isPlaying){
+            source.Play();
+        }
 
         
     }

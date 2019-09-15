@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 //using a singleton style class (in the unity way)
 public class GameManager : MonoBehaviour
@@ -34,21 +35,31 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        deathPanelSwich(false);
         player=GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
+        player.reset();
+        spawner.reset();
     }
 
     // Update is called once per frame
     void Update()
     {
-        //the game is currently over
+
+    }
+
+    public void onRestartClick(){
         if(deathPanel.activeSelf){
-            if(Input.GetKeyDown(KeyCode.Space)){
-                //reset game
-                deathPanelSwich(false);
-                player.reset();
-                spawner.reset();
-            }
+            deathPanelSwich(false);
+            player.reset();
+            spawner.reset();
+        }
+    }
+
+    public void onMenuClick(){
+        if(deathPanel.activeSelf){
+            SceneManager.LoadScene("MainMenu");
+
         }
     }
 }
