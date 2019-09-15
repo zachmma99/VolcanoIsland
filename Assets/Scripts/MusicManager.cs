@@ -6,6 +6,7 @@ using UnityEngine;
 public class MusicManager : MonoBehaviour
 {
 
+    AudioClip backgroundClip;
 
     void Awake(){
         //keeps this gameobject between scene transitions
@@ -16,7 +17,12 @@ public class MusicManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        AudioSource source=GetComponent<AudioSource>();
+        backgroundClip=source.clip;
+
         //play background music here
+        source.Play();
+
         
     }
 
