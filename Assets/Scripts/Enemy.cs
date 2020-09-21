@@ -28,7 +28,7 @@ using UnityEngine;
 
 /// <summary>
 /// Enemy Class.
-/// Contains movement and collision detection for the spawned ememy gameobjects.
+/// Contains movement and collision detection for the spawned enemy gameobjects.
 /// </summary>
 [RequireComponent(typeof(Collider))]
 public class Enemy : MonoBehaviour
@@ -77,7 +77,7 @@ public class Enemy : MonoBehaviour
     /// </summary>
     void Start()
     {
-        //pick random balue between min and max speed
+        //pick random value between min and max speed
         speed = Random.Range(minSpeed, maxSpeed);
 
         p = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
@@ -98,17 +98,20 @@ public class Enemy : MonoBehaviour
     /// and/or instantiates particle effects.
     /// </summary>
     /// <param name="collision">Collider that was triggered.</param>
-    private void OnTriggerEnter2D(Collider2D collision) {
-        if (collision.tag == "Player") {
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
             //reduce player health
             p.takeDamage(damage);
-            Instantiate(hitEffect, new Vector3(transform.position.x, transform.position.y-0.3f, -0.3f), Quaternion.identity);
+            Instantiate(hitEffect, new Vector3(transform.position.x, transform.position.y - 0.3f, -0.3f), Quaternion.identity);
             GameObject.Destroy(gameObject);
         }
 
         //destroy enemy if hits the ground
-        if (collision.tag == "Ground") {
-            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y-0.5f, -0.3f), Quaternion.identity);
+        if (collision.tag == "Ground")
+        {
+            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y - 0.5f, -0.3f), Quaternion.identity);
             GameObject.Destroy(gameObject);
         }
     }

@@ -86,17 +86,23 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Sets animation states depending on input and facing direction.
     /// </summary>
-    private void Update() {
-        if (input > 0+eps || input<0-eps) {
+    private void Update()
+    {
+        if (input > 0 + eps || input < 0 - eps)
+        {
             anim.SetBool("isRunning", true);
-        } else {
+        }
+        else
+        {
             anim.SetBool("isRunning", false);
         }
 
-        if (input > 0) {
+        if (input > 0)
+        {
             transform.eulerAngles = new Vector3(0f, 0f, 0f);
         }
-        else if(input < 0){
+        else if (input < 0)
+        {
             transform.eulerAngles = new Vector3(0f, 180f, 0f);
         }
     }
@@ -104,13 +110,14 @@ public class Player : MonoBehaviour
     /// <summary>
     /// Physics update. Gets the raw input and updates rigidbody velocity.
     /// </summary>
-    void FixedUpdate() {
+    void FixedUpdate()
+    {
         //geting player input
         //input = Input.GetAxis("Horizontal"); //Has smoothing
         input = Input.GetAxisRaw("Horizontal"); //Has no smoothing
 
         //move player
-        rb.velocity = new Vector2(input*speed,rb.velocity.y);
+        rb.velocity = new Vector2(input * speed, rb.velocity.y);
     }
 
     /// <summary>
@@ -119,27 +126,30 @@ public class Player : MonoBehaviour
     /// panel is displayed.
     /// </summary>
     /// <param name="value">Amount of damage for player to take.</param>
-    public void takeDamage(int value) {
+    public void takeDamage(int value)
+    {
         health -= value;
         GameManager.instance().updateHealthText(health);
 
-        if (health <= 0) {
+        if (health <= 0)
+        {
             //player dies
             Instantiate(deathFX, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
             this.gameObject.SetActive(false);
             //GameObject.Destroy(gameObject); //can't have this for an easy reset
             GameManager.instance().deathPanelSwitch(true);
-            
+
         }
     }
 
     /// <summary>
-    /// Resets the game to the inital conditions.
+    /// Resets the game to the initial conditions.
     /// </summary>
-    public void reset(){
-        health=3;
-        Vector3 pos =new Vector3(0.14f,-1.41f,0.0781f);
-        this.transform.position=pos;
+    public void reset()
+    {
+        health = 3;
+        Vector3 pos = new Vector3(0.14f, -1.41f, 0.0781f);
+        this.transform.position = pos;
         GameManager.instance().updateHealthText(health);
         this.gameObject.SetActive(true);
     }
