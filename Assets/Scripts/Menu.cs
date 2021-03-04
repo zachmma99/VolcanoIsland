@@ -22,23 +22,14 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Menu class
-/// Contains functions to be called when menu buttons are clicked.
-/// </summary>
+
 public class Menu : MonoBehaviour
 {
-    /// <summary>
-    /// onPlayClick
-    /// Called when the menu button is clicked.
-    /// Loads the main game scene.
-    /// </summary>
-    public void onPlayClick(){
+    public void onPlayClick()
+    {
         SceneManager.LoadScene("MainGame");
     }
 }

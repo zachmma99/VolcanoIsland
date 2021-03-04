@@ -22,51 +22,42 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// MusicManager Class.
-/// Singleton that plays the background music.
-/// Does not destroy on scene switch.
-/// </summary>
 [RequireComponent(typeof(AudioSource))]
+
 public class MusicManager : MonoBehaviour
 {
-    /// <summary>
-    /// Background music clip.
-    /// </summary>
-    AudioClip backgroundClip;
+    private static MusicManager _instance=null;
 
-
-    //Singleton style class
-    static MusicManager _instance=null;
-
-    void Awake(){
-        //keeps this gameobject between scene transitions
-        //so that the background music will keep playing
-
-        if(_instance==null){
-            _instance=this;
-        } else {
+    void Awake()
+    {
+        if(_instance == null)
+        {
+            _instance = this;
+        }
+        else 
+        {
             Destroy(this.gameObject);
         }
 
         DontDestroyOnLoad(this.gameObject);
     }
 
-    /// <summary>
-    /// Gets the audio source and clip and plays it if it's on not currently
-    /// playing.
-    /// </summary>
+    public static MusicManager instance()
+    {
+        return _instance;
+    }
+
+    AudioClip background;
+
     void Start()
     {
-        AudioSource source=GetComponent<AudioSource>();
-        backgroundClip=source.clip;
+        AudioSource source = GetComponent<AudioSource>();
+        background = source.clip;
 
-        //play background music here
-        if(!source.isPlaying){
+        if(!source.isPlaying)
+        {
             source.Play();
         }
     }

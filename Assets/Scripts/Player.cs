@@ -22,73 +22,52 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
-/// <summary>
-/// Represents the Player character.
-/// Contains movement, collision, and anaimation.
-/// </summary>
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(Animator))]
+
 public class Player : MonoBehaviour
 {
-    /// <summary>
-    /// Player Movement speed.
-    /// </summary>
     public float speed;
-
-    /// <summary>
-    /// Input value read in using control stick or keyboard.
-    /// </summary>
+    public int health;
+    public int ammo;
+    public float timeBetweenDashes;
+    private float dashTimer;
+    private float dashCooldown;
     private float input;
 
-    /// <summary>
-    /// Current player health.
-    /// </summary>
-    public int health;
+    private Color baseColor;
+    private Color hitColor;
 
-    /// <summary>
-    /// Epsilon, used for control stick input.
-    /// </summary>
-    private float eps = 0.0001f;
+    private Rigidbody2D rb;
+    private SpriteRenderer[] sr;
+    public Transform arm;
 
-    /// <summary>
-    /// Object that contains the death particle effects.
-    /// </summary>
-    public GameObject deathFX;
+    public GameObject attack;
+    public GameObject healthUp;
+    public GameObject dashEffect;
+    public GameObject deathEffect;
 
-    /// <summary>
-    /// Rigidbody for player collisions
-    /// </summary>
-    Rigidbody2D rb;
-
-    /// <summary>
-    /// Animator for player player animations.
-    /// </summary>
     Animator anim;
 
-    /// <summary>
-    /// Gets instances of the Rigidbody and Animator for the player.
-    /// Also updates the UI with the current health.
-    /// </summary>
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        sr = GetComponentsInChildren<SpriteRenderer>();
+        arm = GetComponent<Transform>();
         anim = GetComponent<Animator>();
         GameManager.instance().updateHealthText(health);
         GameManager.instance().deathPanelSwitch(false);
-
+        baseColor = new Color(255, 255, 255);
+        hitColor = new Color(255, 0, 0);
+        dashTimer = 0f;
+        dashCooldown = timeBetweenDashes;
     }
 
-    /// <summary>
-    /// Sets animation states depending on input and facing direction.
-    /// </summary>
     private void Update()
     {
-        if (input > 0 + eps || input < 0 - eps)
+        if (input > 0 || input < 0)
         {
             anim.SetBool("isRunning", true);
         }
@@ -105,52 +84,119 @@ public class Player : MonoBehaviour
         {
             transform.eulerAngles = new Vector3(0f, 180f, 0f);
         }
+        
+        handleInput();
     }
 
-    /// <summary>
-    /// Physics update. Gets the raw input and updates rigidbody velocity.
-    /// </summary>
     void FixedUpdate()
     {
-        //geting player input
-        //input = Input.GetAxis("Horizontal"); //Has smoothing
         input = Input.GetAxisRaw("Horizontal"); //Has no smoothing
-
-        //move player
         rb.velocity = new Vector2(input * speed, rb.velocity.y);
     }
 
-    /// <summary>
-    /// Applies damage to the player. When the player dies, the death particle
-    /// effect is instantiated, the gameObject is deactivated and the game over
-    /// panel is displayed.
-    /// </summary>
-    /// <param name="value">Amount of damage for player to take.</param>
+    private void handleInput()
+    {
+        if ((Input.GetKeyDown(KeyCode.LeftShift)) && (dashTimer <= 0f))
+        {
+            dash();
+
+            dashTimer = timeBetweenDashes;
+        }
+        else
+        {
+            dashTimer -= Time.deltaTime;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            shoot();
+
+            anim.ResetTrigger("notShooting");
+
+            anim.SetTrigger("isShooting");
+        }
+        {
+            anim.SetTrigger("notShooting");
+            
+            anim.ResetTrigger("isShooting");
+        }
+    }
+
+    public void gainHealth(int value)
+    {
+        health += value;
+        
+        sr[0].color = baseColor;
+        sr[1].color = baseColor;
+        
+        GameManager.instance().updateHealthText(health);
+        
+        Instantiate(healthUp, new Vector3(transform.position.x, transform.position.y + 2f, 0f), Quaternion.identity);
+    }
+
     public void takeDamage(int value)
     {
         health -= value;
+
+        sr[0].color = hitColor;
+        sr[1].color = hitColor;
+
         GameManager.instance().updateHealthText(health);
 
         if (health <= 0)
         {
-            //player dies
-            Instantiate(deathFX, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
+            Instantiate(deathEffect, new Vector3(transform.position.x, transform.position.y, 0f), Quaternion.identity);
             this.gameObject.SetActive(false);
-            //GameObject.Destroy(gameObject); //can't have this for an easy reset
             GameManager.instance().deathPanelSwitch(true);
-
         }
     }
 
-    /// <summary>
-    /// Resets the game to the initial conditions.
-    /// </summary>
+    private void dash()
+    {
+        float currentPosX = this.transform.position.x;
+        float currentPosY = this.transform.position.y;
+        float currentPosZ = this.transform.position.z;
+        float newForwardPosX = currentPosX + 3;
+        float newBackwardPosX = currentPosX - 3;
+
+        if (this.transform.rotation.y == 0)
+        {
+            this.transform.position = new Vector3(newForwardPosX, currentPosY, currentPosZ);
+            Instantiate(dashEffect, new Vector3(newForwardPosX, this.transform.position.y + 0.5f, 0f), Quaternion.Euler(0f, -90f, 90f));
+        }
+        else
+        {
+            this.transform.position = new Vector3(newBackwardPosX, currentPosY, currentPosZ);
+            Instantiate(dashEffect, new Vector3(newBackwardPosX, this.transform.position.y + 0.5f, 0f), Quaternion.Euler(0f, -90f, 90f));
+        }
+    }
+
+    private void shoot()
+    {   
+        if (ammo > 0)
+        {
+            ammo -= 1;
+
+            GameManager.instance().updateAmmoText(ammo);
+
+            Instantiate(attack, new Vector3(arm.transform.position.x, arm.transform.position.y + 0.5f, 0f), Quaternion.identity);
+        }
+        else
+        {
+            return;
+        }
+    }
+
     public void reset()
     {
         health = 3;
-        Vector3 pos = new Vector3(0.14f, -1.41f, 0.0781f);
+        ammo = 10;
+        Vector3 pos = new Vector3(0f, -3.75f, 0f);
         this.transform.position = pos;
         GameManager.instance().updateHealthText(health);
+        GameManager.instance().updateAmmoText(ammo);
         this.gameObject.SetActive(true);
+        sr[0].color = baseColor;
+        sr[1].color = baseColor;
     }
 }

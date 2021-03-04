@@ -26,86 +26,78 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/// <summary>
-/// Keeps track of all spawned enemies and the spawning rate.
-/// <remark>
-/// The Update method performs the checks for game state and instantiates the
-/// enemy gameobjects.
-/// </remark>
-/// </summary>
 public class Spawner : MonoBehaviour
 {
-
-    /// <summary>
-    /// Array that contains all of the currently active enemy objects.
-    /// </summary>
     public GameObject[] enemies;
+    public GameObject[] healthItems;
 
-    /// <summary>
-    /// Time to wait between spawning enemy objects.
-    /// </summary>
-    public float timeBetweenSpawns;
+    private Transform player;
 
-    /// <summary>
-    /// Minium allowable time between enemy spawn.
-    /// </summary>
     public float minSpawnTime;
-
-    /// <summary>
-    /// Amount of time to decrease the time between spawning over time.
-    /// </summary>
+    public float maxSpawnTime;
+    public float timeBetweenEnemySpawns;
+    public float timeBetweenHealthSpawns;
     public float decreaseAmt;
 
-    /// <summary>
-    /// Triggers spawn when the value is <=0
-    /// </summary>
-    private float spawnTimer;
+    private float enemySpawnTimer;
+    private float healthSpawnTimer;
+    private float OGTime;
 
-    /// <summary>
-    /// sets the spawning timer to 0 so that an enemy will spawn immediately.
-    /// </summary>
     void Start()
     {
-        spawnTimer = 0f;
+        enemySpawnTimer = 0f;
+        healthSpawnTimer = 0f;
+        OGTime = timeBetweenEnemySpawns;
+        player = GameManager.instance().playerPosition();
     }
 
-    /// <summary>
-    /// Spawns the enemy gameobjects. Uses the spawnTimer to determin when to
-    /// spawn. If the player is dead, no spawns take place. As the game progresses,
-    /// the time between spawns will decrease until a minimum value is reached.
-    /// </summary>
     void Update()
     {
-        //stop spawning if there is no character
-        if (GameObject.FindGameObjectWithTag("Player") == null || GameObject.FindGameObjectWithTag("Player").activeSelf==false) {
+        if (!GameManager.instance().isPlayerActive())
+        {
             return;
         }
-        if (spawnTimer <= 0) {
-            //spawn a enemy
-            float min = -5f;
-            float max = 5f;
-            GameObject enemy = enemies[Random.Range(0, enemies.Length)];
-            float value = Random.Range(min, max);
-            Vector3 position = new Vector3(value, 6.5f, 0f);
-            Instantiate(enemy,new Vector3(position.x,position.y,0f),Quaternion.identity);
 
-            //increasing difficulty after every spawn
-            timeBetweenSpawns -=decreaseAmt;
-            if (timeBetweenSpawns < minSpawnTime) {
-                timeBetweenSpawns = minSpawnTime;
+        if (enemySpawnTimer <= 0f)
+        {
+            GameObject e = enemies[Random.Range(0, enemies.Length)];
+            float eLocation = Random.Range(-8.5f, 60f);
+            Instantiate(e, new Vector3(eLocation, 6f, 0f), Quaternion.identity);
+
+            float smartLocation = Random.Range(player.position.x, player.position.x + 5);
+            Instantiate(e, new Vector3(smartLocation, 6f, 0f), Quaternion.Euler(0f, 0f, Random.Range(5f, 45f)));
+
+            timeBetweenEnemySpawns -= decreaseAmt;
+            if (timeBetweenEnemySpawns < minSpawnTime) 
+            {
+                timeBetweenEnemySpawns = maxSpawnTime;
             }
 
-            spawnTimer = timeBetweenSpawns;
-        } else {
-            spawnTimer -= Time.deltaTime;
+            enemySpawnTimer = timeBetweenEnemySpawns;
+        } 
+        else 
+        {
+            enemySpawnTimer -= Time.deltaTime;
+        }
+
+        if (healthSpawnTimer <= 0f)
+        {
+            GameObject hI = healthItems[Random.Range(0, healthItems.Length)];
+            float value = Random.Range(-8.5f, 60f);
+            Vector3 position = new Vector3(value, 6.5f, 0f);
+            Instantiate(hI, new Vector3(0f, 6f, 0f), Quaternion.identity);
+
+            healthSpawnTimer = timeBetweenHealthSpawns;
+        }
+        else 
+        {
+            healthSpawnTimer -= Time.deltaTime;
         }
 
     }
 
-    /// <summary>
-    /// Resets the timeBetweenSpawns back to the initial value.
-    /// </summary>
-    public void reset(){
-        timeBetweenSpawns=1.25f;
+    public void reset()
+    {
+        timeBetweenEnemySpawns = OGTime;
     }
 }

@@ -22,102 +22,84 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// Manages game state and UI
-/// </summary>
 public class GameManager : MonoBehaviour
 {
-    //Simple singleton for the GameManager
-    //Our game is simple enough that a singleton to manage state is useful.
-    //Don't overuse this design pattern!
-    static GameManager _instance=null;
+    private static GameManager _instance = null;
 
-    void Awake(){
-        if(_instance==null){
-            _instance=this;
+    void Awake()
+    {
+        if (_instance == null)
+        {
+            _instance = this;
         }
     }
 
-    public static GameManager instance(){
+    public static GameManager instance()
+    {
         return _instance;
     }
-    /// <summary>
-    /// Text object that represents the Health of the player. Displayed to UI.
-    /// </summary>
+
     public Text healthText;
+    public Text ammoText;
+    public GameObject DeathPanel;
 
-    /// <summary>
-    /// UI panel that is shown then the Player loses all health.
-    /// </summary>
-    public GameObject deathPanel;
-
-    /// <summary>
-    /// Reference to the Player object.
-    /// </summary>
     Player player;
-
-    /// <summary>
-    /// Reference to the Spawner object.
-    /// </summary>
     Spawner spawner;
 
-    /// <summary>
-    /// Function for updating the Health UI text during gameplay.
-    /// </summary>
-    /// <param name="health">The Health value to display in the UI</param>
-    public void updateHealthText(int health){
-        healthText.text="x"+health;
-    }
-
-    /// <summary>
-    /// Function for switching the GameOver UI on and off.
-    /// </summary>
-    /// <param name="state">State to change the UI panel to.</param>
-    /// <remark>
-    /// state = True will set the UI panel active, False will set to inactive.
-    /// </remark>
-    public void deathPanelSwitch(bool state){
-        deathPanel.SetActive(state);
-    }
-
-    /// <summary>
-    /// Gets references to player and spawner and resets the game to an initial
-    /// state.
-    /// </summary>
     void Start()
     {
-        deathPanelSwitch(false);
-        player=GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         spawner = GameObject.FindGameObjectWithTag("Spawner").GetComponent<Spawner>();
+
+        deathPanelSwitch(false);
         player.reset();
         spawner.reset();
     }
 
-    /// <summary>
-    /// Resets the game to a playable state after clicking on the Restart button
-    /// on the game over UI.
-    /// </summary>
-    public void onRestartClick(){
-        if(deathPanel.activeSelf){
+    public bool isPlayerActive()
+    {
+        return player.gameObject.activeSelf;
+    }
+
+    public Transform playerPosition()
+    {
+        return player.transform;   
+    }
+
+    public void updateHealthText(int health)
+    {
+        healthText.text = "x" + health;
+    }
+
+    public void updateAmmoText(int ammo)
+    {
+        ammoText.text = "x" + ammo;
+    }
+
+    public void deathPanelSwitch(bool state)
+    {
+        DeathPanel.SetActive(state);
+    }
+
+    public void onRestartClick()
+    {
+        if(DeathPanel.activeSelf)
+        {
             deathPanelSwitch(false);
             player.reset();
             spawner.reset();
         }
     }
 
-    /// <summary>
-    /// Function called when clicking on the Menu button after Game Over.
-    /// </summary>
-    public void onMenuClick(){
-        if(deathPanel.activeSelf){
+    public void onMenuClick()
+    {
+        if(DeathPanel.activeSelf)
+        {
             SceneManager.LoadScene("MainMenu");
-
         }
     }
 }
